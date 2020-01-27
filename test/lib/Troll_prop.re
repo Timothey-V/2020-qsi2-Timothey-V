@@ -82,3 +82,38 @@ describe("Troll Idempotence", ({test}) => {
       ();
   })
 });
+
+describe("Troll Metamorphism", ({test}) => {
+  test(
+    "i got one increase correctly the score",
+    ({expect}) => {
+      QCheck.Test.make(
+        ~count=1000,
+        ~name="i got one increase correctly the score",
+        troll_elf_arbitrary,
+        ((troll, elf)) => 
+             Lib.Elf.value(elf) + scoring(troll) == scoring(i_got_one(elf, troll))
+          
+      )
+      |> expect.ext.qCheckTest;      ()
+    })
+});
+
+describe("Troll Injection", ({test}) => {
+  test(
+    "2 different entrances that do not lead to the same exit",
+    ({expect}) => {
+      QCheck.Test.make(
+        ~count=1000,
+        ~name="2 different entrances that do not lead to the same exit",
+        troll_two_elves_arbitrary,
+        ((troll, elfOne, elfTwo)) => {
+            elfOne != elfTwo ?
+            i_got_one(elfOne, troll) != i_got_one(elfTwo, troll) : true;
+        }
+          
+      )
+      |> expect.ext.qCheckTest;      ()
+  })
+});
+
